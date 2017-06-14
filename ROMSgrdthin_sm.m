@@ -1,4 +1,4 @@
-function [ h, zice ] = ROMSgrdthin_sm( h, zice, mask_rho, hmin, zmin, land )
+function [ h, zice, mask ] = ROMSgrdthin_sm( h, zice, mask_rho, hmin, zmin, land )
 %ROMSGRDTHIN_SM Checks for bathymetry points that are thinner than a
 %minimum allowed thickness and fixes them
 %   h - ROMS bathymetry
@@ -30,7 +30,6 @@ pts = length(find(thin==1));
 if(land)
     land = wc_thick<hmin/2; %Set points that are less than hmin to land
     mask_rho(land)=0; %Readjust mask_rho
-    nc_varput(file,'mask_rho',mask_rho); %Re-save mask_rho
 
 end
 
@@ -58,6 +57,7 @@ end
 
 %Reset water zice points to 0 ice thickness
 zice(isnan(zice))=0;
+mask = mask_rho;
 
 end
 
