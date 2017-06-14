@@ -28,7 +28,7 @@ thin = wc_thick<hmin;  %Points that are too thin (459 total, 252 @ 1/2)
 pts = length(find(thin==1));
 
 if(land)
-    land = wc_thick<hmin; %Set points that are less than hmin to land
+    land = wc_thick<hmin/2; %Set points that are less than hmin to land
     mask_rho(land)=0; %Readjust mask_rho
     nc_varput(file,'mask_rho',mask_rho); %Re-save mask_rho
 
