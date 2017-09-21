@@ -11,6 +11,7 @@ function [filelist] = romsinitialize_sm(type, run)
 %project = 'RossSea/';
 
 %in_dir = [path project run '/'];
+%in_dir = ['/media/mnemoniko/Oolong/Ross/Output/' run '/'];
 in_dir = ['/media/mnemoniko/EarlGrey/CCPO/Output/' run '/'];
 cmd = ['ls ' in_dir 'ross_' type '*.nc > ' in_dir type 'Files.txt']; % Create a list of files
 system( cmd ); clear cmd;
