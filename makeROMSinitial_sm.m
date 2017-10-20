@@ -13,7 +13,6 @@ mm = size(h,1)-2;
 Lp = lm + 2; Mp = mm + 2;
 N = nc_getdiminfo(grdfile,'N','Length');
 
-
 %Create and populate netcdf initial file
 nc_create_empty(filename);
 
@@ -32,9 +31,10 @@ nc_adddim(filename,'xi_v',Lp);
 nc_adddim(filename,'eta_rho',Mp);
 nc_adddim(filename,'eta_u',Mp);
 nc_adddim(filename,'eta_v',Mp-1);
-nc_adddim(file,'s_rho',N);
-nc_adddim(file,'N',N);
-nc_adddim(file,'s_w',N+1);
+nc_adddim(filename,'s_rho',N);
+nc_adddim(filename,'N',N);
+nc_adddim(filename,'s_w',N+1);
+nc_adddim(filename,'time',1);
 
 %Grid & geometry variables:
 v1.Name = 'spherical';
@@ -295,8 +295,8 @@ v1.Attribute(1).Value = 'S-coordinate surface control parameter';
 v1.Dimension = {};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 'theta_b';
@@ -306,8 +306,8 @@ v1.Attribute(1).Value = 'S-coordinate bottom control parameter';
 v1.Dimension = {};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 'Vtransform';
@@ -317,8 +317,8 @@ v1.Attribute(1).Value = 'vertical terrain-following transformation equation';
 v1.Dimension = {};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 'Vstretching';
@@ -328,8 +328,8 @@ v1.Attribute(1).Value = 'Vertical terrain-following stretching function';
 v1.Dimension = {};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 'Tcline';
@@ -341,8 +341,8 @@ v1.Attribute(2).Value = 'meter';
 v1.Dimension = {};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 'hc';
@@ -354,8 +354,8 @@ v1.Attribute(2).Value = 'meter';
 v1.Dimension = {};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 's_rho';
@@ -377,8 +377,8 @@ v1.Attribute(7).Value = 's_rho, scalar';
 v1.Dimension = {'s_rho'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 's_w';
@@ -400,8 +400,8 @@ v1.Attribute(7).Value = 's_w, scalar';
 v1.Dimension = {'s_w'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 'Cs_r';
@@ -417,8 +417,8 @@ v1.Attribute(4).Value = 'Cs_r, scalar';
 v1.Dimension = {'s_rho'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 v1.Name = 'Cs_w';
@@ -434,8 +434,8 @@ v1.Attribute(4).Value = 'Cs_w, scalar';
 v1.Dimension = {'s_w'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 clear v1
 
 %Initial data variables:
@@ -452,8 +452,8 @@ v1.Attribute(4).Value = 'time, scalar, series';
 v1.Dimension = {'time'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,0.00);
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,0.00);
 clear v1
 
 v1.Name = 'zeta';
@@ -469,8 +469,8 @@ v1.Attribute(4).Value = 'free-surface, scalar, series';
 v1.Dimension = {'time','eta_rho','xi_rho'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,data.zeta);
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,data.zeta);
 clear v1
 
 v1.Name = 'ubar';
@@ -486,8 +486,8 @@ v1.Attribute(4).Value = 'ubar-velocity, scalar, series';
 v1.Dimension = {'time','eta_u','xi_u'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,data.ubar);
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,data.ubar);
 clear v1
 
 v1.Name = 'vbar';
@@ -503,8 +503,8 @@ v1.Attribute(4).Value = 'vbar-velocity, scalar, series';
 v1.Dimension = {'time','eta_v','xi_v'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,data.vbar);
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,data.vbar);
 clear v1
 
 v1.Name = 'u';
@@ -520,12 +520,12 @@ v1.Attribute(4).Value = 'u-velocity, scalar, series';
 v1.Dimension = {'time','s_rho','eta_u','xi_u'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,data.u);
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,data.u);
 clear v1
 
 v1.Name = 'v';
-v1.Datatype = 'double'
+v1.Datatype = 'double';
 v1.Attribute(1).Name = 'long_name';
 v1.Attribute(1).Value = 'v-momentum component';
 v1.Attribute(2).Name = 'units';
@@ -537,8 +537,8 @@ v1.Attribute(4).Value = 'v-velocity, scalar, series';
 v1.Dimension = {'time','s_rho','eta_v','xi_v'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,data.v);
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,data.v);
 clear v1
 
 v1.Name = 'temp';
@@ -554,8 +554,8 @@ v1.Attribute(4).Value = 'temperature, scalar, series';
 v1.Dimension = {'time','s_rho','eta_rho','xi_rho'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,data.temp);
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,data.temp);
 clear v1
 
 v1.Name = 'salt';
@@ -571,8 +571,8 @@ v1.Attribute(4).Value = 'salinity, scalar, series';
 v1.Dimension = {'time','s_rho','eta_rho','xi_rho'};
 v1.Chunking = [];
 v1.Deflate = 0;
-nc_addvar(file,v1);
-nc_varput(file,v1.Name,data.salt);
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,data.salt);
 clear v1
 
 % v1.Name = 
@@ -588,8 +588,8 @@ clear v1
 % v1.Dimension = 
 % v1.Chunking = [];
 % v1.Deflate = 0;
-% nc_addvar(file,v1);
-% nc_varput(file,v1.Name,nc_varget(grdfile,v1.Name));
+% nc_addvar(filename,v1);
+% nc_varput(filename,v1.Name,nc_varget(grdfile,v1.Name));
 % clear v1
 
 end
