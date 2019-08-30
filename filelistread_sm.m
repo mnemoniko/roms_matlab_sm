@@ -14,7 +14,8 @@ function [filelist] = filelistread_sm(directory, filename)
    if ( strg ~= -1 )
      tmp = [tmp; char( strg )];
    end
- end; clear strg;
+ end
+ clear strg;
  filelist = tmp; clear tmp;
  fclose(fid); clear fid msg;
 

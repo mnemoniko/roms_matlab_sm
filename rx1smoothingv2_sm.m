@@ -1,4 +1,4 @@
-function [ h, zice ] = rx1smoothingv2_sm( file, rx1max, ISswitch )
+function [ h, zice ] = rx1smoothingv2_sm( file, rx1max, ISswitch, Maskswitch )
 %rx1smoothingv2_sm Smoothing rx1 values using method in Martinho & Bateen
 %2006
 %   INPUT:
@@ -8,6 +8,8 @@ function [ h, zice ] = rx1smoothingv2_sm( file, rx1max, ISswitch )
 %       the current grid)
 %       ISswitch - Set to 1 to smooth the ice shelf front, 0 to not.
 %       Recommend to only turn on AFTER the rest of the grid is smoothed.
+%       Maskswitch - Set to 1 to use the mask_rho from the grid file. 0
+%       ignores the mask.
 
 %% Variables & Parameters
 maxIter = 3000;
@@ -19,8 +21,12 @@ Vtransform = nc_varget(file,'Vtransform');
 Vstretching = nc_varget(file,'Vstretching');
 theta_s = nc_varget(file,'theta_s');
 theta_b = nc_varget(file,'theta_b');
-mask = nc_varget(file,'mask_rho');
-N = nc_getdiminfo(file,'N','Length');
+if(Maskswitch)
+    mask = nc_varget(file,'mask_rho');
+else
+    mask = ones(size(h));
+end
+N = nc_getdiminfo(file,'s_rho','Length');
 Tcline = nc_varget(file,'Tcline');
 
 Nw = N+1;

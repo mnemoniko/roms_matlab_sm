@@ -31,7 +31,8 @@ eta_v   = (0 : mm)';
 xi_psi  = xi_u;
 eta_psi = eta_v;
 
-pm = ones(Mp,Lp)./dl; pn = pm;
+visc = ones(Mp,Lp);
+pm = visc./dl; pn = pm;
 
 [x_rho, y_rho] = meshgrid( xi_rho * dl, eta_rho * dl );
 [x_psi, y_psi] = meshgrid( xi_psi * dl, eta_psi * dl );
@@ -68,7 +69,7 @@ angler(:, end) = angler(:, end - 1);
 angler(  1, :) = angler(      2, :);
 angler(end, :) = angler(end - 1, :);
 
-[vmask,umask,pmask] = uvp_masks(mask_rho);
+[umask,vmask,pmask] = uvpmask_sm(mask_rho);
 
 %% Create ROMS grid file
 
@@ -146,18 +147,18 @@ nc_varput(filename,v1.Name,10000);
 clear v1
 
 v1.Name = 'spherical';
-v1.Datatype = 'char';
+v1.Datatype = 'int';
 v1.Attribute(1).Name = 'long_name';
 v1.Attribute(1).Value = 'Grid type logical switch';
-v1.Attribute(2).Name = 'option_T';
+v1.Attribute(2).Name = 'option_1';
 v1.Attribute(2).Value = 'spherical';
-v1.Attribute(3).Name = 'option_F';
+v1.Attribute(3).Name = 'option_0';
 v1.Attribute(3).Value = 'cartesian';
 v1.Dimension = {};
 v1.Chunking = [];
 v1.Deflate = 0;
 nc_addvar(filename,v1);
-nc_varput(filename,v1.Name,'F');
+nc_varput(filename,v1.Name,0);
 clear v1
 
 v1.Name = 'f0';
@@ -589,6 +590,36 @@ v1.Chunking = [];
 v1.Deflate = 0;
 nc_addvar(filename,v1);
 nc_varput(filename,v1.Name,zice);
+clear v1
+
+v1.Name = 'visc_factor';
+v1.Datatype = 'double';
+v1.Attribute(1).Name = 'long_name'; 
+v1.Attribute(1).Value = 'horizontal viscosity sponge factor';
+v1.Attribute(2).Name = 'valid_min';
+v1.Attribute(2).Value = 0.;
+v1.Attribute(3).Name = 'coordinates';
+v1.Attribute(3).Value = 'lon_rho lat_rho';
+v1.Dimension = {'eta_rho','xi_rho'};
+v1.Chunking = [];
+v1.Deflate = 0;
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,visc);
+clear v1
+
+v1.Name = 'diff_factor';
+v1.Datatype = 'double';
+v1.Attribute(1).Name = 'long_name'; 
+v1.Attribute(1).Value = 'horizontal diffusivity sponge factor';
+v1.Attribute(2).Name = 'valid_min';
+v1.Attribute(2).Value = 0.;
+v1.Attribute(3).Name = 'coordinates';
+v1.Attribute(3).Value = 'lon_rho lat_rho';
+v1.Dimension = {'eta_rho','xi_rho'};
+v1.Chunking = [];
+v1.Deflate = 0;
+nc_addvar(filename,v1);
+nc_varput(filename,v1.Name,visc);
 clear v1
 
 

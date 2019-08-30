@@ -11,7 +11,7 @@ h = nc_varget(grdfile,'h');
 lm = size(h,2)-2;
 mm = size(h,1)-2;
 Lp = lm + 2; Mp = mm + 2;
-N = nc_getdiminfo(grdfile,'N','Length');
+N = nc_getdiminfo(grdfile,'s_rho','Length');
 
 %Create and populate netcdf initial file
 nc_create_empty(filename);

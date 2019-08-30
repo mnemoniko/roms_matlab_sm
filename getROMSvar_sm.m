@@ -1,7 +1,7 @@
-function [ var ] = getROMSvar_sm( run,type,varname,varargin )
+function [ var ] = getROMSvar_sm( in_dir,type,varname,varargin )
 %GETROMSVAR_SM Reads in a specific ROMS variable from a given simulation
 %run and returns the array over the whole simulation time
-%   INPUT:  run - run number as a string
+%   INPUT:  in_dir - directory of ROMS output files
 %           type - his, avg, or dia files (also a str) (might work with sta
 %           too, untested)
 %           varname - name of the variable to get (another string)
@@ -10,7 +10,7 @@ function [ var ] = getROMSvar_sm( run,type,varname,varargin )
 %           days
 %   OUTPUT: var - Array of the appropriate variable (double)
 
-files = romsinitialize_sm(type,run);
+files = romsinitialize_sm(in_dir,type);
 nfiles = size(files,1);
 var = [];
 for i=1:nfiles
@@ -39,6 +39,7 @@ if(strcmp(varname,'ocean_time'))
             var = var.*24;
         case 'm'
             var = datenum(2010,9,15+var,0,0,0);
+            %var = datenum(0,0,var,0,0,0);
         case 's'
             var = var.*24.*3600;
         case 'd'

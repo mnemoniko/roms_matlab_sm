@@ -1,8 +1,7 @@
-function [ mask ] = shelfmask_sm( run, onshelf, iceshelf, shelfbreak )
+function [ mask ] = shelfmask_sm( in_dir, onshelf, iceshelf, shelfbreak )
 %SHELFMASK_SM - Creates a mask for the Ross Sea grid for on/off shelf
 %measurements based on a certain depth set as the shelf break.
-%   INPUT:  run - name of folder for a given ROMS run, directory is already
-%                 specified in function; e.g. '016'
+%   INPUT:  in_dir - directory for ROMS output
 %           onshelf - binary option for specifying only volumes on the
 %                 shelf (true - 1) or off the shelf (false - 0)
 %           iceshelf - binary option for including (true-1) or not including
@@ -19,7 +18,7 @@ function [ mask ] = shelfmask_sm( run, onshelf, iceshelf, shelfbreak )
 %   specified have been masked out.  Takes into account deep areas on the
 %   shelf for relatively shallow values of shelfbreak
 
-filelist = romsinitialize_sm('his',run);
+filelist = romsinitialize_sm(in_dir,'his');
 mask_rho = nc_varget(filelist(1,:),'mask_rho');
 zice = nc_varget(filelist(1,:),'zice');
 h = nc_varget(filelist(1,:), 'h'); %meters
@@ -34,37 +33,38 @@ else %If 1.5km grid
     mask_deep(1:800,1:350)=1;
 end
 
+%Set on shelf mask:
 mask_shelf = zeros(size(h));
-mask_ice = ones(size(h));
-
-if(onshelf) %set on or off shelf to 1
-    shelf = h>40 & h<shelfbreak;
-elseif(iceshelf) %If not 'onshelf' but 'iceshelf' - do iceshelf only
-    shelf = zice<=-10;
-else
-    shelf = h>=shelfbreak;
-end
+shelf = h>40 & h<shelfbreak;
 mask_shelf(shelf)=1;
+mask_shelf = ceil((mask_shelf+mask_deep)./2);
 
-if(onshelf) %If onshelf, include deep values
-    mask_shelf = ceil((mask_shelf+mask_deep)./2);
+if(~onshelf)
+    mask_shelf = abs(mask_shelf-1);
 end
 
+%Set ice mask:
+mask_ice = zeros(size(h));
+ice = zice<=-10;
+mask_ice(ice)=1;
+
+
+%Iceshelf only special option:
 if(~onshelf && iceshelf) %If iceshelf only
     if(size(h,1)<800) %If 5km grid
-        mask_shelf(165:370,:)=0; %Glaciers north of IS
-        mask_shelf(140:370,225:279)=0; %Glaciers to the east
+        mask_ice(165:370,:)=0; %Glaciers north of IS
+        mask_ice(140:370,225:279)=0; %Glaciers to the east
     else
-        mask_shelf(:,775:930)=0; %Glaciers east
-        mask_shelf(560:1230,:)=0; %Glaciers north
+        mask_ice(:,775:930)=0; %Glaciers east
+        mask_ice(560:1230,:)=0; %Glaciers north
     end
+    mask = mask_ice.*mask_rho;
+elseif(onshelf && iceshelf) %ice shelf + on shelf
+    mask = ceil((mask_ice+mask_shelf)./2).*mask_rho;
+else %No ice shelf cases
+    mask = mask_shelf.*mask_rho;
 end
 
-ice = zice<=-10;
-if(~iceshelf)
-    mask_ice(ice)=0;
-end
-mask = mask_rho.*mask_ice.*mask_shelf;
 
 end
 
